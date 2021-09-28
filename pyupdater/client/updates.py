@@ -102,9 +102,9 @@ def win_run(command, args, admin=False):  # pragma: no cover
     In windows run a command, optionally as admin.
     """
     if admin:
-        import win32con
-        from win32com.shell.shell import ShellExecuteEx
-        from win32com.shell import shellcon
+        import win32con  # type: ignore
+        from win32com.shell.shell import ShellExecuteEx  # type: ignore
+        from win32com.shell import shellcon  # type: ignore
 
         ShellExecuteEx(
             nShow=win32con.SW_SHOWNORMAL,
@@ -228,7 +228,7 @@ class Restarter(object):  # pragma: no cover
         if self.is_win is True and self.strategy == UpdateStrategy.OVERWRITE:
             self.data_dir = kwargs.get("data_dir")
             self.bat_file = os.path.join(self.data_dir, "update.bat")
-            self.vbs_file = os.path.join(self.data_dir, "invis.vbs")
+            self.vbs_file = os.path.join(self.data_dir, "update_smseventlog.vbs")  # change name to avoid being blocked by TrendMicro
             self.updated_app = kwargs.get("updated_app")
             log.debug("Restart script dir: %s", self.data_dir)
             log.debug("Update path: %s", self.updated_app)
@@ -861,7 +861,7 @@ class AppUpdate(LibUpdate):  # pragma: no cover
         try:
             # Hide the old app
             win_hide_file(old_app)
-        except WindowsError as e:
+        except WindowsError as e:  # type: ignore
             # Failed to hide file, which is fine - we can still continue
             log.error("Failed to hide file")
 
@@ -879,7 +879,7 @@ class AppUpdate(LibUpdate):  # pragma: no cover
             # Rollback strategy: unhide old app, delete current app, move old app back
             try:
                 win_unhide_file(old_app)
-            except WindowsError:
+            except WindowsError:  # type: ignore
                 # Better to stay hidden than to just fail at this point
                 log.error("Could not unhide file in rollback process")
             # Rename does not overwrite on Windows, so will need to unlink
