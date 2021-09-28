@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "pyupdater"
+version = "4.1.0"
+description = "Fork of PyUpdater"
+authors = ["Jayme Gordon <jaymegordo@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+appdirs = "^1.4.4"
+bsdiff4 = "^1.2.1"
+certifi = "^2021.5.30"
+dsdev-utils = "1.0.5"
+pyinstaller = "^4.5.1"
+PyNaCl = "^1.4.0"
+stevedore = "<4.0"
+urllib3 = "<2.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
