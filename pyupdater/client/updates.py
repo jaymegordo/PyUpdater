@@ -292,7 +292,8 @@ DEL "%~f0"
                 '& WScript.Arguments(0) & """", 0, False'
             )
         log.debug("Starting update batch file")
-        win_run("wscript.exe", [self.vbs_file, self.bat_file], admin=needs_admin)
+        # win_run("wscript.exe", [self.vbs_file, self.bat_file], admin=needs_admin)
+        win_run("wscript.exe", [self.bat_file], admin=needs_admin)
         os._exit(0)
 
     def _win_overwrite_restart(self):
