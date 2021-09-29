@@ -1,27 +1,28 @@
-# ------------------------------------------------------------------------------
-# Copyright (c) 2015-2020 Digital Sapphire
-#
-# Permission is hereby granted, free of charge, to any person obtaining
-# a copy of this software and associated documentation files
-# (the "Software"), to deal in the Software without restriction, including
-# without limitation the rights to use, copy, modify, merge, publish,
-# distribute, sublicense, and/or sell copies of the Software, and to permit
-# persons to whom the Software is furnished to do so, subject to the
-# following conditions:
-#
-# The above copyright notice and this permission notice shall be
-# included in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
-# ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
-# TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-# PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
-# SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
-# ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
-# OR OTHER DEALINGS IN THE SOFTWARE.
-# ------------------------------------------------------------------------------
+"""
+Copyright (c) 2015-2020 Digital Sapphire
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files
+(the "Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to permit
+persons to whom the Software is furnished to do so, subject to the
+following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
+SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+OR OTHER DEALINGS IN THE SOFTWARE.
+"""
+
 from __future__ import unicode_literals
 
 import ctypes
@@ -117,24 +118,25 @@ def win_run(command, args, admin=False):  # pragma: no cover
 
 
 def get_highest_version(name, plat, channel, easy_data, strict):
-    # Parses version file and returns the highest version number.
-    #
-    #   Args:
-    #
-    #      name (str): name of file to search for updates
-    #
-    #      plat (str): the platform we are requesting for
-    #
-    #      channel (str): the release channel
-    #
-    #      easy_data (dict): data file to search
-    #
-    #      strict (bool): specify whether or not to take the channel
-    #                     into consideration
-    #
-    #   Returns:
-    #
-    #      (str) Highest version number
+    """Parses version file and returns the highest version number.
+
+      Args:
+
+         name (str): name of file to search for updates
+
+         plat (str): the platform we are requesting for
+
+         channel (str): the release channel
+
+         easy_data (dict): data file to search
+
+         strict (bool): specify whether or not to take the channel
+                        into consideration
+
+      Returns:
+
+         (str) Highest version number
+    """
 
     # We grab all keys and return the version corresponding to the
     # channel passed to this function
@@ -223,14 +225,18 @@ class Restarter(object):  # pragma: no cover
         self.current_app = current_app
         self.name = kwargs.get('name', '')
         self.strategy = kwargs.get('strategy', UpdateStrategy.DEFAULT)
+
         log.debug('Current App: %s', self.current_app)
+
         self.is_win = sys.platform == 'win32'
+
         if self.is_win is True and self.strategy == UpdateStrategy.OVERWRITE:
+
             self.data_dir = kwargs.get('data_dir')
             self.bat_file = os.path.join(self.data_dir, 'update.bat')
-            # change name to avoid being blocked by TrendMicro
-            self.vbs_file = os.path.join(
-                self.data_dir, 'update_smseventlog.vbs')
+
+            # self.vbs_file = os.path.join(self.data_dir, 'update_smseventlog.vbs')
+
             self.updated_app = kwargs.get('updated_app')
             log.debug('Restart script dir: %s', self.data_dir)
             log.debug('Update path: %s', self.updated_app)
@@ -249,13 +255,14 @@ class Restarter(object):  # pragma: no cover
 
     def _win_overwrite(self):
         is_folder = os.path.isdir(self.updated_app)
+
         if is_folder:
-            needs_admin = requires_admin(self.updated_app) or requires_admin(
-                self.current_app
-            )
+            needs_admin = requires_admin(self.updated_app) or requires_admin(self.current_app)
         else:
             needs_admin = requires_admin(self.current_app)
+
         log.debug('Admin required to update={}'.format(needs_admin))
+
         with io.open(self.bat_file, 'w', encoding='utf-8') as bat:
             if is_folder:
                 bat.write(
@@ -299,65 +306,35 @@ class Restarter(object):  # pragma: no cover
         os._exit(0)
 
     def _win_overwrite_restart(self):
-        is_folder = os.path.isdir(self.updated_app)
-        if is_folder:
-            needs_admin = requires_admin(self.updated_app) or requires_admin(
-                self.current_app
-            )
+        """Overwrite existing app with update and restart"""
+
+        if os.path.isdir(self.updated_app):
+            needs_admin = requires_admin(self.updated_app) or requires_admin(self.current_app)
+            copy_cmd = 'robocopy "{}" "{}" /e /move /V > NUL'.format(self.updated_app, self.current_app)
+            start_path = os.path.join(self.current_app, '.'.join([self.name, 'exe']))
         else:
             needs_admin = requires_admin(self.current_app)
-        log.debug('Admin required to update={}'.format(needs_admin))
+            copy_cmd = 'move /Y "{}" "{}" > NUL'.format(self.updated_app, self.current_app)
+            start_path = self.current_app
 
+        log.debug(f'Admin required to update: {needs_admin}')
+
+        args = [
+            '@echo off',
+            'chcp 65001',
+            'echo Updating to latest version...',
+            'ping 127.0.0.1 -n 5 -w 1000 > NUL',
+            copy_cmd,
+            'echo restarting...',
+            f'start "" "{start_path}"',
+            'DEL "%~f0"']
+
+        # write bat file
         with io.open(self.bat_file, 'w', encoding='utf-8') as bat:
-            if is_folder:
-                bat.write(
-                    """
-                    @echo off
-                    chcp 65001
-                    echo Updating to latest version...
-                    ping 127.0.0.1 -n 5 -w 1000 > NUL
-                    robocopy "{}" "{}" /e /move /V > NUL
-                    echo restarting...
-                    start "" "{}"
-                    DEL "{}"
-                    DEL "%~f0"
-                    """.format(
-                        self.updated_app,
-                        self.current_app,
-                        os.path.join(self.current_app,
-                                     '.'.join([self.name, 'exe'])),
-                        self.vbs_file,
-                    )
-                )
-            else:
-                bat.write(
-                    """
-                    @echo off
-                    chcp 65001
-                    echo Updating to latest version...
-                    ping 127.0.0.1 -n 5 -w 1000 > NUL
-                    move /Y "{}" "{}" > NUL
-                    echo restarting...
-                    start "" "{}"
-                    DEL "{}"
-                    DEL "%~f0"
-                    """.format(
-                        self.updated_app,
-                        self.current_app,
-                        self.current_app,
-                        self.vbs_file,
-                    )
-                )
-        with io.open(self.vbs_file, 'w', encoding='utf-8') as vbs:
-            # http://www.howtogeek.com/131597/can-i-run-a-windows-batch-
-            # file-without-a-visible-command-prompt/
-            vbs.write(
-                'CreateObject("Wscript.Shell").Run """" '
-                '& WScript.Arguments(0) & """", 0, False'
-            )
+            bat.write('\n'.join(args))
+
         log.debug('Starting update batch file (win overwrite restart)')
-        # win_run("wscript.exe", [self.vbs_file, self.bat_file], admin=needs_admin)
-        win_run('wscript.exe', [self.bat_file], admin=needs_admin)
+        subprocess.call(self.bat_file)
         os._exit(0)
 
 
