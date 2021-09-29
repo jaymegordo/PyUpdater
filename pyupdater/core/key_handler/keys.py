@@ -23,19 +23,19 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 # ------------------------------------------------------------------------------
 from __future__ import unicode_literals
+
 import io
-import logging
 import json
+import logging
 import os
 
 from appdirs import user_data_dir
 from nacl.signing import SigningKey
 
 from pyupdater import settings
-from pyupdater.utils.exceptions import KeyHandlerError
 from pyupdater.utils.encoding import UnpaddedBase64Encoder
+from pyupdater.utils.exceptions import KeyHandlerError
 from pyupdater.utils.storage import Storage
-
 
 log = logging.getLogger(__name__)
 
@@ -47,15 +47,15 @@ class Keys(object):
         self.key_data = {}
 
         if test:
-            self.data_dir = os.path.join("private", "data")
+            self.data_dir = os.path.join('private', 'data')
         else:
-            self.data_dir = user_data_dir("PyUpdater", "Digital Sapphire")
+            self.data_dir = user_data_dir('PyUpdater', 'Digital Sapphire')
 
         if not os.path.exists(self.data_dir):
             os.makedirs(self.data_dir)
 
         # The name of the offline key database
-        self.keypack_filename = os.path.join(self.data_dir, "offline_keys.db")
+        self.keypack_filename = os.path.join(self.data_dir, 'offline_keys.db')
         self._load()
 
     def make_keypack(self, name):
@@ -63,14 +63,14 @@ class Keys(object):
         try:
             keypack = self._gen_keypack(name)
         except AssertionError:
-            log.debug("Failed to generate keypack")
+            log.debug('Failed to generate keypack')
             return False
         except KeyHandlerError as err:
             log.error(err)
             return False
 
         # Write keypack to cwd
-        with io.open(settings.KEYPACK_FILENAME, "w", encoding="utf-8") as f:
+        with io.open(settings.KEYPACK_FILENAME, 'w', encoding='utf-8') as f:
             out = json.dumps(keypack, indent=2, sort_keys=True)
             f.write(out)
         return True
@@ -79,11 +79,11 @@ class Keys(object):
         if not os.path.exists(self.keypack_filename):
             self._save()
         else:
-            with io.open(self.keypack_filename, "r", encoding="utf-8") as f:
+            with io.open(self.keypack_filename, 'r', encoding='utf-8') as f:
                 self.key_data = json.loads(f.read())
 
     def _save(self):
-        with io.open(self.keypack_filename, "w", encoding="utf-8") as f:
+        with io.open(self.keypack_filename, 'w', encoding='utf-8') as f:
             out = json.dumps(self.key_data, indent=2, sort_keys=True)
             f.write(out)
 
@@ -94,12 +94,12 @@ class Keys(object):
         except Exception as err:
             log.error(err)
             log.debug(err, exc_info=True)
-            raise KeyHandlerError("Failed to create keypair")
+            raise KeyHandlerError('Failed to create keypair')
 
         # Load app specific private & public key
         off_pri, off_pub = self._load_offline_keys(name)
 
-        log.debug("off_pri type: %s", type(off_pri))
+        log.debug('off_pri type: %s', type(off_pri))
         off_pri = off_pri.encode()
 
         signing_key = SigningKey(off_pri, self.key_encoder)
@@ -112,9 +112,9 @@ class Keys(object):
         app_pub = app_pub.decode()
 
         keypack = {
-            "upload": {"app_public": app_pub, "signature": signature},
-            "client": {"offline_public": off_pub},
-            "repo": {"app_private": app_pri},
+            'upload': {'app_public': app_pub, 'signature': signature},
+            'client': {'offline_public': off_pub},
+            'repo': {'app_private': app_pri},
         }
         return keypack
 
@@ -124,9 +124,9 @@ class Keys(object):
             pri, pub = self._make_keys()
             pri = pri.decode()
             pub = pub.decode()
-            self.key_data[name] = {"private": pri, "public": pub}
+            self.key_data[name] = {'private': pri, 'public': pub}
             self._save()
-        return self.key_data[name]["private"], self.key_data[name]["public"]
+        return self.key_data[name]['private'], self.key_data[name]['public']
 
     def _make_keys(self):
         # Makes a set of private and public keys
@@ -153,7 +153,7 @@ class KeyImporter(object):
     def _load_keypack():
         json_data = None
         try:
-            with io.open(settings.KEYPACK_FILENAME, "r", encoding="utf-8") as f:
+            with io.open(settings.KEYPACK_FILENAME, 'r', encoding='utf-8') as f:
                 data = f.read()
         except Exception as err:
             log.debug(err, exc_info=True)

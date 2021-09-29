@@ -1,3 +1,18 @@
+
+SHELL := /bin/bash
+# utils := @poetry run python -m scripts.utils
+code := pyupdater *.py
+
+.PHONY : format
+format:  ## autopep, isort, flake
+	@poetry run autopep8 --recursive --in-place $(code)
+	@poetry run isort $(code)
+	@poetry run flake8 $(code)
+
+.PHONY : flake
+flake:  ## run flake with only selected dirs
+	@poetry run flake8 $(code)
+
 clean:
 	python dev/clean.py
 

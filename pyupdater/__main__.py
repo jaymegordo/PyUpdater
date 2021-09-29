@@ -22,10 +22,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 # ------------------------------------------------------------------------------
-if __name__ == "__main__":
+if __name__ == '__main__':
     # Enable python -m pyupdater [...]
-    from pyupdater.cli import main
     import sys
+
+    from pyupdater.cli import main
 
     arguments = sys.argv[1:]
     main(arguments)

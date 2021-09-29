@@ -29,11 +29,10 @@ import os
 try:
     from PyInstaller import __version__ as pyi_version
 except ImportError:
-    pyi_version = "0.0"
-from PyInstaller.building import makespec as _pyi_makespec
+    pyi_version = '0.0'
 from PyInstaller import compat as _pyi_compat
 from PyInstaller import log as _pyi_log
-
+from PyInstaller.building import makespec as _pyi_makespec
 
 log = logging.getLogger(__name__)
 
@@ -53,24 +52,24 @@ def pyi_makespec(pyi_args):  # pragma: no cover
         _args.pathex.insert(0, os.getcwd())
 
         spec_file = _pyi_makespec.main(_args.scriptname, **vars(_args))
-        log.debug("wrote %s", spec_file)
+        log.debug('wrote %s', spec_file)
 
     parser = argparse.ArgumentParser()
     # We are hacking into pyinstaller here & are aware of the risks
     # using noqa below so landscape.io will ignore it
     _pyi_makespec.__add_options(parser)  # noqa
     _pyi_log.__add_options(parser)  # noqa
-    if hasattr(_pyi_compat, "__add_obsolete_options"):
+    if hasattr(_pyi_compat, '__add_obsolete_options'):
         _pyi_compat.__add_obsolete_options(parser)  # noqa
     # End hacking
-    parser.add_argument("scriptname", nargs="+")
+    parser.add_argument('scriptname', nargs='+')
 
     args = parser.parse_args(pyi_args)
 
     # We call init because it loads logger into the global
     # namespace of the Pyinstaller.log module. logger is used
     # in the Pyinstaller.log.__process_options call
-    if hasattr(_pyi_log, "init"):
+    if hasattr(_pyi_log, 'init'):
         _pyi_log.init()
     # We are hacking into pyinstaller here & are aware of the risks
     # using noqa below so landscape.io will ignore it

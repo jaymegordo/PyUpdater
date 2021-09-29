@@ -23,13 +23,15 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 # ------------------------------------------------------------------------------
 from __future__ import unicode_literals
+
 import os
+
+from pyupdater.utils.config import Config
 
 from .key_handler import KeyHandler
 from .key_handler.keys import KeyImporter
 from .package_handler import PackageHandler
 from .uploader import Uploader
-from pyupdater.utils.config import Config
 
 
 class PyUpdater(object):
@@ -53,7 +55,7 @@ class PyUpdater(object):
 
             config (obj): config object
         """
-        if not hasattr(config, "DATA_DIR"):
+        if not hasattr(config, 'DATA_DIR'):
             config.DATA_DIR = None
         if config.DATA_DIR is None:
             config.DATA_DIR = os.getcwd()

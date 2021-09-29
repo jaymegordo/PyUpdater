@@ -23,6 +23,7 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 # ------------------------------------------------------------------------------
 from __future__ import unicode_literals
+
 import sys
 import traceback
 
@@ -50,8 +51,8 @@ class STDError(Exception):
     def __init__(self, msg, tb=None, expected=False):
         if expected is False:
             msg = msg + (
-                "; please report this issue on https://github.com"
-                "/Digital-Sapphire/PyUpdater/issues"
+                '; please report this issue on https://github.com'
+                '/Digital-Sapphire/PyUpdater/issues'
             )
         super(STDError, self).__init__(msg)
 
@@ -61,7 +62,7 @@ class STDError(Exception):
     def format_traceback(self):  # pragma: no cover
         if self.traceback is None:
             return None
-        return "".join(traceback.format_tb(self.traceback))
+        return ''.join(traceback.format_tb(self.traceback))
 
 
 class ClientError(STDError):
