@@ -334,7 +334,7 @@ class Restarter(object):  # pragma: no cover
             bat.write('\n'.join(args))
 
         log.debug('Starting update batch file (win overwrite restart)')
-        subprocess.call(self.bat_file)
+        subprocess.Popen([self.bat_file])
         os._exit(0)
 
 
