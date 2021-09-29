@@ -229,6 +229,7 @@ class Restarter(object):  # pragma: no cover
         log.debug('Current App: %s', self.current_app)
 
         self.is_win = sys.platform == 'win32'
+        self.version = kwargs.get('version', None)
 
         if self.is_win is True and self.strategy == UpdateStrategy.OVERWRITE:
 
@@ -307,6 +308,7 @@ class Restarter(object):  # pragma: no cover
 
     def _win_overwrite_restart(self):
         """Overwrite existing app with update and restart"""
+        vstr = f'version: {self.version}' if not self.version is None else 'latest version'
 
         if os.path.isdir(self.updated_app):
             needs_admin = requires_admin(self.updated_app) or requires_admin(self.current_app)
@@ -322,10 +324,11 @@ class Restarter(object):  # pragma: no cover
         args = [
             '@echo off',
             'chcp 65001',
-            'echo Updating to latest version...',
+            f'echo Updating {self.name} to {vstr} ...',
+            'echo This should take 1-2 mins, do not close this console window.'
             'ping 127.0.0.1 -n 5 -w 1000 > NUL',
             copy_cmd,
-            'echo restarting...',
+            'echo restarting ...',
             f'start "" "{start_path}"',
             'DEL "%~f0"']
 
@@ -333,7 +336,9 @@ class Restarter(object):  # pragma: no cover
         with io.open(self.bat_file, 'w', encoding='utf-8') as bat:
             bat.write('\n'.join(args))
 
+        # call update batch script then close current app process
         log.debug('Starting update batch file (win overwrite restart)')
+        # subprocess.call is blocking and prevents current app from closing to update/restart
         subprocess.Popen([self.bat_file])
         os._exit(0)
 
@@ -910,7 +915,10 @@ class AppUpdate(LibUpdate):  # pragma: no cover
             updated_app = os.path.join(self.update_folder, self.name)
 
         update_info = dict(
-            data_dir=self.data_dir, updated_app=updated_app, name=self.name
-        )
+            data_dir=self.data_dir,
+            updated_app=updated_app,
+            name=self.name,
+            version=self.version)
+
         r = Restarter(current_app, **update_info)
         r.process()
