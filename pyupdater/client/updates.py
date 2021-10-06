@@ -544,10 +544,13 @@ class LibUpdate(object):
             if self._is_downloaded() is True:  # pragma: no cover
                 self._download_status = True
             else:
-                log.debug('Starting patch download')
                 patch_success = False
                 if self.channel == 'stable':
+                    log.debug('Starting patch download')
                     patch_success = self._patch_update()
+                else:
+                    log.debug(f'{self.channel} channel, patch skipped')
+
                 # Tested elsewhere
                 if patch_success:  # pragma: no cover
                     self._download_status = True
