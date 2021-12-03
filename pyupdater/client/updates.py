@@ -312,7 +312,7 @@ class Restarter(object):  # pragma: no cover
 
         if os.path.isdir(self.updated_app):
             needs_admin = requires_admin(self.updated_app) or requires_admin(self.current_app)
-            copy_cmd = 'robocopy "{}" "{}" /e /move /V > NUL'.format(self.updated_app, self.current_app)
+            copy_cmd = 'robocopy "{}" "{}" /e /move /v > NUL'.format(self.updated_app, self.current_app)
             start_path = os.path.join(self.current_app, '.'.join([self.name, 'exe']))
         else:
             needs_admin = requires_admin(self.current_app)
@@ -320,9 +320,10 @@ class Restarter(object):  # pragma: no cover
             start_path = self.current_app
 
         log.debug(f'Admin required to update: {needs_admin}')
+        log.debug(f'copy_cmd: {copy_cmd}')
 
         args = [
-            '@echo off',
+            # '@echo off',
             'chcp 65001',
             f'echo Updating {self.name} to {vstr} ...',
             'echo This should take 1-2 mins, do not close this console window.'
@@ -339,7 +340,8 @@ class Restarter(object):  # pragma: no cover
         # call update batch script then close current app process
         log.debug('Starting update batch file (win overwrite restart)')
         # subprocess.call is blocking and prevents current app from closing to update/restart
-        subprocess.Popen([self.bat_file])
+        # subprocess.Popen([self.bat_file])
+        win_run('wscript.exe', [self.bat_file], admin=needs_admin)
         os._exit(0)
 
 
