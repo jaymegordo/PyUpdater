@@ -25,6 +25,18 @@ pre-commit = "^2.15.0"
 [tool.poetry.scripts]
 pyupdater = "pyupdater.cli:main"
 
+
+[tool.pyright]
+ignore = ["pyupdater", "tests", "dev"]
+reportWildcardImportFromLibrary = "none"
+reportUnboundVariable = "information"
+reportMissingImports = "information"
+reportGeneralTypeIssues = "information"
+reportOptionalIterable = "none"
+reportOptionalMemberAccess = "information"
+reportOptionalSubscript = "information"
+reportInvalidStringEscapeSequence = "information"
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
