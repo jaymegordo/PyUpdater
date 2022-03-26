@@ -36,6 +36,7 @@ import tarfile
 import threading
 import uuid
 import zipfile
+from subprocess import CREATE_NEW_CONSOLE
 
 from dsdev_utils.helpers import Version
 from dsdev_utils.paths import ChDir, get_mac_dot_app_dir, remove_any
@@ -323,11 +324,11 @@ class Restarter(object):  # pragma: no cover
         log.debug(f'copy_cmd: {copy_cmd}')
 
         args = [
-            # '@echo off',
             'chcp 65001',
             f'echo Updating {self.name} to {vstr} ...',
             'echo This should take 1-2 mins, do not close this console window.'
-            'ping 127.0.0.1 -n 5 -w 1000 > NUL',
+            # 'ping 127.0.0.1 -n 5 -w 1000 > NUL',
+            'SLEEP 4',
             copy_cmd,
             'echo restarting ...',
             f'start "" "{start_path}"',
@@ -340,8 +341,10 @@ class Restarter(object):  # pragma: no cover
         # call update batch script then close current app process
         log.debug('Starting update batch file (win overwrite restart)')
         # subprocess.call is blocking and prevents current app from closing to update/restart
-        # subprocess.Popen([self.bat_file])
-        win_run('wscript.exe', [self.bat_file], admin=needs_admin)
+        # shell=True keeps it hidden, shell=False shows cmd.exe window
+        # CREATE_NEW_CONSOLE puts it in a separate process and allows this one to exit
+        subprocess.Popen([self.bat_file], shell=True, creationflags=CREATE_NEW_CONSOLE)
+        # win_run('wscript.exe', [self.bat_file], admin=needs_admin)
         os._exit(0)
 
 
