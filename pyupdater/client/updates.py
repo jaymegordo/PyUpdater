@@ -36,7 +36,12 @@ import tarfile
 import threading
 import uuid
 import zipfile
-from subprocess import CREATE_NEW_CONSOLE
+
+try:
+    # windows only
+    from subprocess import CREATE_NEW_CONSOLE
+except ImportError:
+    CREATE_NEW_CONSOLE = None
 
 from dsdev_utils.helpers import Version
 from dsdev_utils.paths import ChDir, get_mac_dot_app_dir, remove_any
