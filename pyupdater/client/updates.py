@@ -333,7 +333,7 @@ class Restarter(object):  # pragma: no cover
             f'echo Updating {self.name} to {vstr} ...',
             'echo This should take 1-2 mins, do not close this console window.'
             # 'ping 127.0.0.1 -n 5 -w 1000 > NUL',
-            'SLEEP 4',
+            'SLEEP 5',
             copy_cmd,
             'echo restarting ...',
             f'start "" "{start_path}"',
