@@ -18,13 +18,16 @@ stevedore = "<4.0"
 urllib3 = "<2.0"
 
 [tool.poetry.dev-dependencies]
-flake8 = "^3.9.2"
 autopep8 = "^1.5.7"
 pre-commit = "^2.15.0"
+ruff = "^0.0.263"
 
 [tool.poetry.scripts]
 pyupdater = "pyupdater.cli:main"
 
+[tool.ruff]
+line-length = 120
+ignore = ["E713", "E714", "E722", "E731", "F405", "F841"]
 
 [tool.pyright]
 ignore = ["pyupdater", "tests", "dev"]
