@@ -17,6 +17,44 @@ dependencies = [
     'stevedore<4.0',
     'urllib3<2.0',
 ]
+readme = 'README.md'
+keywords = [
+    'PyUpdater',
+    'Pyinstaller',
+    'Auto Update',
+    'AutoUpdate',
+    'Auto-Update',
+    'Esky',
+    'updater4pyi',
+    'bbfreeze',
+    'ccfreeze',
+    'freeze',
+    'cz_freeze',
+    'pyupdate',
+]
+classifiers = [
+    'Development Status :: 5 - Production/Stable',
+    'Environment :: Console',
+    'Intended Audience :: Developers',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python :: 3 :: Only',
+]
+
+[project.optional-dependencies]
+s3 = ['PyUpdater-s3-Plugin>=4.0.5']
+scp = ['PyUpdater-scp-Plugin>=4.0']
+all = ['PyUpdater-s3-Plugin>=4.0.5', 'PyUpdater-scp-Plugin>=4.0']
+
+[project.scripts]
+pyupdater = 'pyupdater.cli:main'
+
+[build-system]
+requires = ['setuptools>=61.0']
+build-backend = 'setuptools.build_meta'
+
+[tool.setuptools.packages.find]
+include = ['pyupdater*']
+exclude = ['dev*', 'tests*']
 
 [dependency-groups]
 dev = [
@@ -24,9 +62,6 @@ dev = [
     'pre-commit>=4.2.0',
     'ruff>=0.11.0',
 ]
-
-[project.scripts]
-pyupdater = 'pyupdater.cli:main'
 
 [tool.uv]
 default-groups = ['dev']

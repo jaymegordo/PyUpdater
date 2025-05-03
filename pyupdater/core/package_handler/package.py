@@ -29,7 +29,7 @@ import os
 import re
 import sys
 
-from dsdev_utils.exceptions import VersionError
+from packaging.version import InvalidVersion
 from dsdev_utils.helpers import Version
 from dsdev_utils.paths import ChDir, remove_any
 
@@ -78,7 +78,7 @@ def remove_previous_versions(directory, filename):
     try:
         # We set the full path here because Package() checks if filename exists
         package_info = Package(os.path.join(directory, filename))
-    except (UtilsError, VersionError):
+    except (UtilsError, InvalidVersion):
         log.debug('Cleanup Failed: %s - Cannot parse package info.', filename)
         return
 
@@ -187,7 +187,7 @@ class Package(object):
             v = Version(package_basename)
             self.channel = v.channel
             self.version = str(v)
-        except VersionError:
+        except InvalidVersion:
             msg = 'Package version not formatted correctly: {}'
             self.info['reason'] = msg.format(package_basename)
             log.error(msg)
