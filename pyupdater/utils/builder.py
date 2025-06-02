@@ -30,7 +30,7 @@ import os
 import sys
 import time
 
-from dsdev_utils.exceptions import VersionError
+from packaging.version import InvalidVersion
 from dsdev_utils.helpers import Version
 from dsdev_utils.paths import ChDir, remove_any
 from dsdev_utils.system import get_system
@@ -173,7 +173,7 @@ class Builder(object):  # pragma: no cover
     def _build(self, spec_file_path):
         try:
             Version(self.args.app_version)
-        except VersionError:
+        except InvalidVersion:
             log.error('Version format incorrect: %s', self.args.app_version)
             log.error(
                 """Valid version numbers: 0.10.0, 1.1b, 1.2.1a3
