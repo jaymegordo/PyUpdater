@@ -426,8 +426,12 @@ class Client(object):
 
     # Downloading the manifest. If successful also writes it to file-system
     def _get_manifest_from_http(self):
-        log.debug('Downloading online version file')
-        version_files = [self.version_file, self.version_file_compat]
+        version_files = [
+            # don't use newer versions-win.gz
+            # self.version_file,
+            self.version_file_compat
+        ]
+        log.debug(f'Downloading online version file: {version_files}')
 
         for vf in version_files:
             try:
@@ -450,7 +454,7 @@ class Client(object):
                     # Will be caught down below.
                     # Just logging the error
                     raise
-                log.debug('Version file download successful')
+                log.debug(f'Version file download successful: {vf}')
                 # Writing version file to application data directory
                 self._write_manifest_to_filesystem(decompressed_data, vf)
                 return decompressed_data

@@ -184,7 +184,9 @@ class Package(object):
 
         log.debug('Extracting update archive info for: %s', package_basename)
         try:
-            v = Version(package_basename)
+            version_str = '.'.join(package_basename.split('-')[-1].split('.')[:-1])
+            log.debug('Version string: %s', version_str)
+            v = Version(version_str)
             self.channel = v.channel
             self.version = str(v)
         except InvalidVersion:
