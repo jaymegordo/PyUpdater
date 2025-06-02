@@ -143,6 +143,7 @@ def get_highest_version(name, plat, channel, easy_data, strict):
 
          (str) Highest version number
     """
+    log.debug(f'get_highest_version {name=},{channel=}, {strict=}')
 
     # We grab all keys and return the version corresponding to the
     # channel passed to this function
@@ -190,7 +191,7 @@ def get_highest_version(name, plat, channel, easy_data, strict):
         version = stable
 
     if version is not None:
-        log.debug('Highest version: %s', version)
+        log.debug(f'Highest version: {version}, {channel=}')
         return str(version)
     else:
         log.info('No updates for "%s" on %s exists', name, plat)
@@ -264,7 +265,8 @@ class Restarter(object):  # pragma: no cover
         is_folder = os.path.isdir(self.updated_app)
 
         if is_folder:
-            needs_admin = requires_admin(self.updated_app) or requires_admin(self.current_app)
+            needs_admin = requires_admin(
+                self.updated_app) or requires_admin(self.current_app)
         else:
             needs_admin = requires_admin(self.current_app)
 
@@ -317,12 +319,16 @@ class Restarter(object):  # pragma: no cover
         vstr = f'version: {self.version}' if not self.version is None else 'latest version'
 
         if os.path.isdir(self.updated_app):
-            needs_admin = requires_admin(self.updated_app) or requires_admin(self.current_app)
-            copy_cmd = 'robocopy "{}" "{}" /e /move /v > NUL'.format(self.updated_app, self.current_app)
-            start_path = os.path.join(self.current_app, '.'.join([self.name, 'exe']))
+            needs_admin = requires_admin(
+                self.updated_app) or requires_admin(self.current_app)
+            copy_cmd = 'robocopy "{}" "{}" /e /move /v > NUL'.format(
+                self.updated_app, self.current_app)
+            start_path = os.path.join(
+                self.current_app, '.'.join([self.name, 'exe']))
         else:
             needs_admin = requires_admin(self.current_app)
-            copy_cmd = 'move /Y "{}" "{}" > NUL'.format(self.updated_app, self.current_app)
+            copy_cmd = 'move /Y "{}" "{}" > NUL'.format(
+                self.updated_app, self.current_app)
             start_path = self.current_app
 
         log.debug(f'Admin required to update: {needs_admin}')
@@ -348,7 +354,8 @@ class Restarter(object):  # pragma: no cover
         # subprocess.call is blocking and prevents current app from closing to update/restart
         # shell=True keeps it hidden, shell=False shows cmd.exe window
         # CREATE_NEW_CONSOLE puts it in a separate process and allows this one to exit
-        subprocess.Popen([self.bat_file], shell=True, creationflags=CREATE_NEW_CONSOLE)
+        subprocess.Popen([self.bat_file], shell=True,
+                         creationflags=CREATE_NEW_CONSOLE)
         # win_run('wscript.exe', [self.bat_file], admin=needs_admin)
         os._exit(0)
 
@@ -365,6 +372,8 @@ class LibUpdate(object):
     def __init__(self, data=None):
         if data is None:
             return
+        log.debug(f'{self.__class__.__name__} init {data=}')
+
         # A key used in the version meta data dictionary
         self._updates_key = settings.UPDATES_KEY
 
@@ -445,6 +454,7 @@ class LibUpdate(object):
         self.strategy = data.get('strategy', UpdateStrategy.DEFAULT)
 
         # The latest version available
+        log.debug(f'{self.__class__.__name__} init get_highest_version {self.channel=}')
         self.latest = get_highest_version(
             self.name, self.platform, self.channel, self.easy_data, self.strict
         )
@@ -457,11 +467,13 @@ class LibUpdate(object):
             self.name, cv, self.platform, self.easy_data
         )
 
+        log.debug(f'{self.name=}, {self.latest=}, {self.platform=}')
+
         # Get filename of latest versions update archive
         self.filename = LibUpdate._get_filename(
             self.name, self.latest, self.platform, self.easy_data
         )
-        assert self.filename is not None
+        assert self.filename is not None, f'Filename is None: {self.filename}'
 
         # Used to remove version earlier than the current.
         self.cleanup()
@@ -742,7 +754,7 @@ class AppUpdate(LibUpdate):  # pragma: no cover
 
     def __init__(self, data):
         self._is_win = get_system() == 'win'
-        super(AppUpdate, self).__init__(data)
+        super().__init__(data)
 
     def extract_restart(self):
         """Will extract the update, overwrite the current binary,

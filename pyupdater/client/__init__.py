@@ -283,7 +283,7 @@ class Client(object):
         if self.FROZEN is True and self.name == self.app_name:
             app = True
 
-        log.debug('Checking for %s updates...', name)
+        log.debug(f'_update_check checking for updates, {channel=}, {self.version=}')
         latest = get_highest_version(
             name, self.platform, channel, self.easy_data, strict
         )
@@ -516,7 +516,7 @@ class Client(object):
 
         if data is not None:
             try:
-                log.debug('Data type: %s', type(data))
+                log.debug(f'Data type: {type(data)}')
                 # If json fails to load self.ready will stay false
                 # which will cause _update_check to exit early
                 self.json_data = json.loads(data.decode('utf-8'))
