@@ -100,7 +100,7 @@ class Uploader(object):
 
         self.uploader = self.plg_mgr.get_plugin(requested_uploader, init=True)
         if self.uploader is None:
-            log.debug('PLUGIN_NAMESPACE: %s', self.plg_mgr.PLUGIN_NAMESPACE)
+            log.debug('PLUGIN_NAMESPACES: %s', self.plg_mgr.PLUGIN_NAMESPACES)
             raise UploaderPluginError(
                 'Requested uploader is not installed', expected=True
             )
