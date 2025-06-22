@@ -43,7 +43,8 @@ try:
 except ImportError:
     CREATE_NEW_CONSOLE = None
 
-from dsdev_utils.helpers import Version
+from typing import TYPE_CHECKING
+
 from dsdev_utils.paths import ChDir, get_mac_dot_app_dir, remove_any
 from dsdev_utils.system import get_system
 
@@ -52,6 +53,10 @@ from pyupdater.client.downloader import FileDownloader, get_hash
 from pyupdater.client.patcher import Patcher
 from pyupdater.core.package_handler.package import remove_previous_versions
 from pyupdater.utils.exceptions import ClientError
+from pyupdater.utils.version import Version
+
+if TYPE_CHECKING:
+    from dsdev_utils.helpers import EasyAccessDict
 
 log = logging.getLogger(__name__)
 
@@ -123,7 +128,7 @@ def win_run(command, args, admin=False):  # pragma: no cover
         subprocess.Popen([command] + args)
 
 
-def get_highest_version(name, plat, channel, easy_data, strict):
+def get_highest_version(name: str, plat: str, channel: str, easy_data: 'EasyAccessDict', strict: bool) -> str:
     """Parses version file and returns the highest version number.
 
       Args:
@@ -157,7 +162,7 @@ def get_highest_version(name, plat, channel, easy_data, strict):
     alpha_available = False
     alpha_str = easy_data.get(version_key_alpha)
     if alpha_str is not None:
-        log.debug('Alpha str: %s', alpha_str)
+        log.debug(f'Alpha str: {alpha_str}')
         alpha = Version(alpha_str)
         version_options.append(alpha)
         alpha_available = True
@@ -165,15 +170,15 @@ def get_highest_version(name, plat, channel, easy_data, strict):
     beta_available = False
     beta_str = easy_data.get(version_key_beta)
     if beta_str is not None:
-        log.debug('Beta str: %s', beta_str)
+        log.debug(f'Beta str: {beta_str}')
         beta = Version(beta_str)
         version_options.append(beta)
         beta_available = True
 
-    stable_str = easy_data.get(version_key_stable)
     stable_available = False
+    stable_str = easy_data.get(version_key_stable)
     if stable_str is not None:
-        log.debug('Stable str: %s', stable_str)
+        log.debug(f'Stable str: {stable_str}')
         stable = Version(stable_str)
         version_options.append(stable)
         stable_available = True

@@ -31,7 +31,7 @@ import sys
 import time
 
 from packaging.version import InvalidVersion
-from dsdev_utils.helpers import Version
+from pyupdater.utils.version import Version
 from dsdev_utils.paths import ChDir, remove_any
 from dsdev_utils.system import get_system
 from PyInstaller.__main__ import run as pyi_build

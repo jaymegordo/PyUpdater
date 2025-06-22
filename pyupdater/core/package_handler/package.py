@@ -30,7 +30,7 @@ import re
 import sys
 
 from packaging.version import InvalidVersion
-from dsdev_utils.helpers import Version
+from pyupdater.utils.version import Version
 from dsdev_utils.paths import ChDir, remove_any
 
 from pyupdater.utils.exceptions import PackageHandlerError, UtilsError

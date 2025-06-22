@@ -34,7 +34,7 @@ import warnings
 import appdirs
 from dsdev_utils.app import FROZEN, app_cwd
 from dsdev_utils.helpers import EasyAccessDict as _EAD
-from dsdev_utils.helpers import Version as _Version
+from pyupdater.utils.version import Version as _Version
 from dsdev_utils.helpers import gzip_decompress as _gzip_decompress
 from dsdev_utils.logger import logging_formatter
 from dsdev_utils.paths import ChDir as _ChDir
