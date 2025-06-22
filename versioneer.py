@@ -1054,7 +1054,8 @@ def git_pieces_from_vcs(tag_prefix, root, verbose, run_command=run_command):
     if sys.platform == 'win32':
         GITS = ['git.cmd', 'git.exe']
 
-    out, rc = run_command(GITS, ['rev-parse', '--git-dir'], cwd=root, hide_stderr=True)
+    out, rc = run_command(
+        GITS, ['rev-parse', '--git-dir'], cwd=root, hide_stderr=True)
     if rc != 0:
         if verbose:
             print('Directory %s not under git control' % root)
@@ -1131,7 +1132,8 @@ def git_pieces_from_vcs(tag_prefix, root, verbose, run_command=run_command):
     else:
         # HEX: no tags
         pieces['closest-tag'] = None
-        count_out, rc = run_command(GITS, ['rev-list', 'HEAD', '--count'], cwd=root)
+        count_out, rc = run_command(
+            GITS, ['rev-list', 'HEAD', '--count'], cwd=root)
         pieces['distance'] = int(count_out)  # total number of commits
 
     # commit date: see ISO-8601 comment in git_versions_from_keywords()
@@ -1255,7 +1257,8 @@ def versions_from_file(filename):
 def write_to_version_file(filename, versions):
     """Write the given version number to the given _version.py file."""
     os.unlink(filename)
-    contents = json.dumps(versions, sort_keys=True, indent=1, separators=(',', ': '))
+    contents = json.dumps(versions, sort_keys=True,
+                          indent=1, separators=(',', ': '))
     with open(filename, 'w') as f:
         f.write(SHORT_VERSION_PY % contents)
 
@@ -1606,7 +1609,8 @@ def get_cmdclass(cmdclass=None):
             # now locate _version.py in the new build/ directory and replace
             # it with an updated value
             if cfg.versionfile_build:
-                target_versionfile = os.path.join(self.build_lib, cfg.versionfile_build)
+                target_versionfile = os.path.join(
+                    self.build_lib, cfg.versionfile_build)
                 print('UPDATING %s' % target_versionfile)
                 write_to_version_file(target_versionfile, versions)
 
@@ -1631,7 +1635,8 @@ def get_cmdclass(cmdclass=None):
                 return
             # now locate _version.py in the new build/ directory and replace
             # it with an updated value
-            target_versionfile = os.path.join(self.build_lib, cfg.versionfile_source)
+            target_versionfile = os.path.join(
+                self.build_lib, cfg.versionfile_source)
             print('UPDATING %s' % target_versionfile)
             write_to_version_file(target_versionfile, versions)
 

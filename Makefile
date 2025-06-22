@@ -3,11 +3,10 @@ SHELL := /bin/bash
 # utils := @poetry run python -m scripts.utils
 code := pyupdater *.py
 
-.PHONY : format
-format:  ## autopep, isort, ruff
-	@poetry run autopep8 --recursive --in-place $(code)
-	@poetry run isort $(code)
-	@poetry run ruff check $(code)
+format:  ## run autopep, ruff
+	@uv run --frozen autopep8 --recursive --in-place $(code)
+	# @uv run --frozen ruff check $(code) --select I001 --fix --quiet
+	@uv run --frozen ruff check $(code) --quiet
 
 .PHONY : lint
 lint:  ## ruff linting

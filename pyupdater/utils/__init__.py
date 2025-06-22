@@ -295,7 +295,8 @@ def make_archive(name, target, version, archive_format):
             if os.path.exists(src_manifest):
                 shutil.move(src_manifest, dst_manifest)
             else:
-                log.warning('Manifest file not found (not sure if this matters): %s', src_manifest)
+                log.warning(
+                    'Manifest file not found (not sure if this matters): %s', src_manifest)
 
     file_dir = os.path.dirname(os.path.abspath(target))
     filename = '{}-{}-{}'.format(

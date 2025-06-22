@@ -459,7 +459,8 @@ class LibUpdate(object):
         self.strategy = data.get('strategy', UpdateStrategy.DEFAULT)
 
         # The latest version available
-        log.debug(f'{self.__class__.__name__} init get_highest_version {self.channel=}')
+        log.debug(
+            f'{self.__class__.__name__} init get_highest_version {self.channel=}')
         self.latest = get_highest_version(
             self.name, self.platform, self.channel, self.easy_data, self.strict
         )
