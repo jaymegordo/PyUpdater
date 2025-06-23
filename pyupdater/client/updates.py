@@ -573,22 +573,21 @@ class LibUpdate(object):
                 self._download_status = True
             else:
                 patch_success = False
-                # if self.channel == 'stable':
-
-                # always do patch updates, not just stable
-                log.debug('Starting patch download')
-                patch_success = self._patch_update()
-                # else:
-                #     log.debug(f'{self.channel} channel, patch skipped')
+                if self.channel == 'stable':
+                    log.debug('Starting patch download')
+                    patch_success = self._patch_update()
+                else:
+                    log.debug(f'{self.channel} channel, patch skipped')
 
                 # Tested elsewhere
                 if patch_success:  # pragma: no cover
                     self._download_status = True
                     log.debug('Patch download successful')
                 else:
-                    log.debug('Patch update failed')
-                    log.debug('Starting full download')
+                    log.debug(
+                        'Patch update failed (or not attempted) - starting full download')
                     update_success = self._full_update()
+
                     if update_success:
                         self._download_status = True
                         log.debug('Full download successful')

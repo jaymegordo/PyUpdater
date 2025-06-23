@@ -76,7 +76,6 @@ include = ['pyupdater*']
 exclude = ['dev*', 'tests*']
 
 
-
 [tool.ruff]
 line-length = 120
 ignore = ['E713', 'E714', 'E722', 'E731', 'F405', 'F841']
